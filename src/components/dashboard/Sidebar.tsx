@@ -36,7 +36,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
           <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-            dSonic JHTracker
+            dSonic JATracker
           </h2>
           <Separator className="my-4" />
           <div className="space-y-1">

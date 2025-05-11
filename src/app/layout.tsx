@@ -22,7 +22,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "dSonic JHTracker",
+  title: "dSonic JATracker",
   description:
     "A Next.js powered web application that provides users an intuitive interface for building their resume.",
   metadataBase: new URL("https://dsonic-resume-builder.davidtung.ca"),
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <head>
-        <title>dSonic JHTracker</title>
+        <title>dSonic JATracker</title>
       </head>
       <body>
         <ResumeProvider>
