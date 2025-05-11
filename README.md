@@ -1,8 +1,8 @@
-# dSonic Resume Builder
+# dSonic JATracker
 
-A modern, full-featured resume builder and job application tracker with AI-powered resume refinement capabilities. Create, manage, and optimize your resumes for specific job applications with ease.
+A modern, full-featured job application tracker with AI-powered resume refinement capabilities. Create, manage, and optimize your resumes for specific job applications with ease.
 
-![dSonic Resume Builder](https://dsonic-resume-builder.davidtung.ca/opengraph-image)
+![dSonic JATracker](https://dsonic-jatracker.davidtung.ca/opengraph-image)
 
 ## Features
 
@@ -34,7 +34,6 @@ A modern, full-featured resume builder and job application tracker with AI-power
 - **Database**: SQLite with Prisma ORM
 - **AI Integration**: OpenAI API (GPT-4o)
 - **UI Components**: Radix UI, Lucide React icons
-- **State Management**: React Context API
 - **API**: GraphQL with Apollo Server
 
 ## Getting Started
@@ -50,13 +49,13 @@ A modern, full-featured resume builder and job application tracker with AI-power
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/dsonic-resume-builder.git
+   git clone https://github.com/dsonic0912/JATracker.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd dsonic-resume-builder
+   cd JATracker
    ```
 
 3. Install dependencies:
@@ -135,7 +134,7 @@ docker compose down
 ## Project Structure
 
 ```
-dsonic-resume-builder/
+dsonic-jatracker/
 ├── src/
 │   ├── app/                  # Next.js app directory
 │   │   ├── components/       # Resume section components
