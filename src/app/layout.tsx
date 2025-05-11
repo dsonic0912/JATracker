@@ -6,6 +6,15 @@ import React from "react";
 import { ResumeProvider } from "@/context/resume-context";
 import { EditModeProvider } from "@/context/edit-mode-context";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
+
+// Dynamically import the EnvChecker component to avoid SSR issues
+const EnvChecker = dynamic(
+  () => import("@/components/EnvChecker").then((mod) => mod.EnvChecker),
+  {
+    ssr: false,
+  },
+);
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +42,7 @@ export default function RootLayout({
         <ResumeProvider>
           <EditModeProvider>{children}</EditModeProvider>
         </ResumeProvider>
+        <EnvChecker />
         <Analytics />
       </body>
     </html>

@@ -263,6 +263,14 @@ export default function JobApplicationDetailPage() {
       const result = await response.json();
 
       if (!response.ok) {
+        // Check for specific API key errors
+        if (result.error && result.error.includes("OpenAI API key")) {
+          throw new Error(
+            "OpenAI API key issue: " +
+              (result.details || result.error) +
+              " Please contact the administrator.",
+          );
+        }
         throw new Error(result.error || "Failed to refine resume with AI");
       }
 
@@ -594,11 +602,6 @@ export default function JobApplicationDetailPage() {
                 <SparklesIcon className="mr-2 h-4 w-4" />
                 {isRefiningResume ? "Refining..." : "Refine resume with AI"}
               </Button>
-              {remainingAICalls !== null && remainingAICalls > 0 && (
-                <div className="absolute -bottom-6 left-0 text-xs text-muted-foreground">
-                  {remainingAICalls} refinements left
-                </div>
-              )}
             </div>
             <Button
               variant="outline"
@@ -895,23 +898,11 @@ export default function JobApplicationDetailPage() {
                   <div className="mt-2 rounded-md bg-yellow-50 p-4 text-yellow-700">
                     {refinementWarning}
                   </div>
-                  {remainingAICalls !== null && (
-                    <div className="mt-2 text-sm text-muted-foreground">
-                      You have {remainingAICalls} AI refinements remaining
-                      today.
-                    </div>
-                  )}
                 </>
               ) : (
                 <>
                   The AI has refined your resume to better match this job
                   application.
-                  {remainingAICalls !== null && (
-                    <div className="mt-2 text-sm text-muted-foreground">
-                      You have {remainingAICalls} AI refinements remaining
-                      today.
-                    </div>
-                  )}
                 </>
               )}
             </DialogDescription>

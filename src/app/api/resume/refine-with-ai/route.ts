@@ -3,9 +3,25 @@ import { resumeService } from "@/lib/db/resume-service";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 
-// Initialize OpenAI client
+// Function to get the OpenAI API key from all possible sources
+function getOpenAIApiKey(): string {
+  // Try different ways to access the API key
+  const apiKey = process.env.OPENAI_API_KEY || "";
+
+  // Log the API key status for debugging (redacted for security)
+  console.log("OpenAI API Key status:", apiKey ? "Present" : "Missing");
+  console.log("OpenAI API Key length:", apiKey?.length || 0);
+  console.log(
+    "OpenAI API Key first 4 chars:",
+    apiKey ? apiKey.substring(0, 4) + "..." : "N/A",
+  );
+
+  return apiKey;
+}
+
+// Initialize OpenAI client with the API key
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: getOpenAIApiKey(),
 });
 
 /**
@@ -14,6 +30,35 @@ const openai = new OpenAI({
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if OpenAI API key is available
+    if (!openai.apiKey) {
+      console.error("OpenAI API key is missing");
+      return NextResponse.json(
+        {
+          error:
+            "OpenAI API key is not configured. Please contact the administrator.",
+          details: "The API key is missing in the environment variables.",
+        },
+        { status: 500 },
+      );
+    }
+
+    // Validate the API key format (simple check)
+    if (
+      openai.apiKey &&
+      (!openai.apiKey.startsWith("sk-") || openai.apiKey.length < 20)
+    ) {
+      console.error("OpenAI API key appears to be invalid");
+      return NextResponse.json(
+        {
+          error:
+            "OpenAI API key appears to be invalid. Please check your configuration.",
+          details: "The API key doesn't match the expected format.",
+        },
+        { status: 500 },
+      );
+    }
+
     const { resumeId, jobDescription, jobUrl } = await request.json();
 
     if (!resumeId) {
@@ -39,7 +84,8 @@ export async function POST(request: NextRequest) {
     if (anonymousUser.aiCallsLimit <= 0) {
       return NextResponse.json(
         {
-          error: "You have reached your daily limit for AI resume refinements",
+          error:
+            "Sorry, you've reached the daily limit for Resume Refinement. All limits and data will reset daily at 12:00 AM UTC. Please try again later.",
         },
         { status: 403 },
       );

@@ -275,7 +275,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/dsonic/myprojects/dsonic-jhtracker/src/generated/prisma",
+      "value": "/home/dsonic/myprojects/dsonic-jatracker/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -289,7 +289,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/dsonic/myprojects/dsonic-jhtracker/prisma/schema.prisma",
+    "sourceFilePath": "/home/dsonic/myprojects/dsonic-jatracker/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -303,7 +303,6 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
