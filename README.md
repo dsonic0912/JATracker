@@ -2,8 +2,6 @@
 
 A modern, full-featured job application tracker with AI-powered resume refinement capabilities. Create, manage, and optimize your resumes for specific job applications with ease.
 
-![dSonic JATracker](https://dsonic-jatracker.davidtung.ca/opengraph-image)
-
 ## Features
 
 ### Resume Management
