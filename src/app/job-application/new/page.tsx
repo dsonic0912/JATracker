@@ -43,7 +43,14 @@ export default function NewJobApplicationPage() {
     const fetchResumes = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/resumes");
+        const response = await fetch("/api/resumes", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
         const result = await response.json();
 
         if (result.data) {
@@ -65,7 +72,7 @@ export default function NewJobApplicationPage() {
   }, []);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -77,7 +84,7 @@ export default function NewJobApplicationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.company || !formData.position || !formData.resumeId) {
       setError("Please fill in all required fields");
       return;
@@ -162,7 +169,9 @@ export default function NewJobApplicationPage() {
                 <Label htmlFor="resumeId">Resume *</Label>
                 <Select
                   value={formData.resumeId}
-                  onValueChange={(value) => handleSelectChange("resumeId", value)}
+                  onValueChange={(value) =>
+                    handleSelectChange("resumeId", value)
+                  }
                   disabled={loading || resumes.length === 0}
                 >
                   <SelectTrigger>

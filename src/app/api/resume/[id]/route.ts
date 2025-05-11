@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resumeService } from "@/lib/db/resume-service";
 
+// Disable Next.js cache for this route
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * GET /api/resume/[id]
  * Get a resume by ID
@@ -16,13 +20,36 @@ export async function GET(
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ data: resume });
+    // Create response with cache control headers
+    const response = NextResponse.json({ data: resume });
+
+    // Set cache control headers to prevent caching
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+
+    return response;
   } catch (error) {
     console.error("Error fetching resume:", error);
-    return NextResponse.json(
+
+    // Create error response with cache control headers
+    const errorResponse = NextResponse.json(
       { error: (error as Error).message },
       { status: 500 },
     );
+
+    // Set cache control headers to prevent caching
+    errorResponse.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    errorResponse.headers.set("Pragma", "no-cache");
+    errorResponse.headers.set("Expires", "0");
+
+    return errorResponse;
   }
 }
 
@@ -149,12 +176,35 @@ export async function DELETE(
   try {
     await resumeService.deleteResume(params.id);
 
-    return NextResponse.json({ success: true });
+    // Create response with cache control headers
+    const response = NextResponse.json({ success: true });
+
+    // Set cache control headers to prevent caching
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+
+    return response;
   } catch (error) {
     console.error("Error deleting resume:", error);
-    return NextResponse.json(
+
+    // Create error response with cache control headers
+    const errorResponse = NextResponse.json(
       { error: (error as Error).message },
       { status: 500 },
     );
+
+    // Set cache control headers to prevent caching
+    errorResponse.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
+    );
+    errorResponse.headers.set("Pragma", "no-cache");
+    errorResponse.headers.set("Expires", "0");
+
+    return errorResponse;
   }
 }

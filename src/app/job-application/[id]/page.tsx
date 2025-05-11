@@ -98,7 +98,14 @@ export default function JobApplicationDetailPage() {
   const fetchResumes = async () => {
     try {
       setLoadingResumes(true);
-      const response = await fetch("/api/resumes");
+      const response = await fetch("/api/resumes", {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
       const result = await response.json();
 
       if (result.data) {

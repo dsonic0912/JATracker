@@ -56,7 +56,16 @@ export default function ResumesPage() {
   const fetchResumes = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/resumes");
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/resumes?t=${timestamp}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
       const result = await response.json();
 
       if (result.data) {
@@ -70,8 +79,37 @@ export default function ResumesPage() {
     }
   };
 
+  // Initial fetch
   useEffect(() => {
     fetchResumes();
+  }, []);
+
+  // Refresh data when the window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchResumes();
+    };
+
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
+
+  // Polling mechanism to periodically refresh data
+  useEffect(() => {
+    // Set up polling interval (every 30 seconds)
+    const intervalId = setInterval(() => {
+      if (!document.hidden) {
+        // Only refresh if the page is visible
+        fetchResumes();
+      }
+    }, 30000); // 30 seconds
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   const handleCreateResume = () => {
@@ -100,6 +138,8 @@ export default function ResumesPage() {
       const result = await response.json();
 
       if (result.data) {
+        // Refresh the resumes list before navigating
+        await fetchResumes();
         // Navigate to the new resume
         router.push(`/resume?id=${result.data.id}`);
       } else {
@@ -124,6 +164,12 @@ export default function ResumesPage() {
       setDeleting(true);
       const response = await fetch(`/api/resume/${resumeToDelete}`, {
         method: "DELETE",
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
       });
 
       if (!response.ok) {
@@ -131,12 +177,12 @@ export default function ResumesPage() {
         throw new Error(result.error || "Failed to delete resume");
       }
 
-      // Close the dialog and refresh the resumes list
+      // Close the dialog
       setDeleteDialogOpen(false);
       setResumeToDelete(null);
 
-      // Remove the deleted resume from the state
-      setResumes(resumes.filter((resume) => resume.id !== resumeToDelete));
+      // Fetch fresh data instead of just updating the state
+      await fetchResumes();
     } catch (err) {
       console.error("Error deleting resume:", err);
       setError((err as Error).message);
@@ -166,11 +212,15 @@ export default function ResumesPage() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
         body: JSON.stringify({
           path: ["title"],
           value: editedTitle.trim(),
         }),
+        cache: "no-store",
       });
 
       if (!response.ok) {
@@ -178,17 +228,11 @@ export default function ResumesPage() {
         throw new Error(result.error || "Failed to update resume title");
       }
 
-      // Update the resume in the local state
-      setResumes(
-        resumes.map((resume) =>
-          resume.id === resumeId
-            ? { ...resume, title: editedTitle.trim() }
-            : resume,
-        ),
-      );
-
       // Reset editing state
       cancelEditingTitle();
+
+      // Fetch fresh data instead of just updating the local state
+      await fetchResumes();
     } catch (err) {
       console.error("Error updating resume title:", err);
       setError((err as Error).message);
@@ -227,7 +271,35 @@ export default function ResumesPage() {
     <DashboardLayout title="Resumes">
       <div className="container mx-auto p-6">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Your Resumes</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold">Your Resumes</h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchResumes}
+              disabled={loading}
+              className="flex items-center gap-1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`${loading ? "animate-spin" : ""}`}
+              >
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                <path d="M16 21h5v-5"></path>
+              </svg>
+              {loading ? "Refreshing..." : "Refresh"}
+            </Button>
+          </div>
           <Button onClick={handleCreateResume} disabled={creating}>
             <PlusIcon className="mr-2 h-4 w-4" />
             {creating ? "Creating..." : "Create New Resume"}
