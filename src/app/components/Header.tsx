@@ -2,10 +2,10 @@
 
 import { GlobeIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RESUME_DATA } from "@/data/resume-data";
 import { EditableContent } from "@/components/ui/editable-content";
 import { useResume } from "@/context/resume-context";
+import { GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons";
 
 interface LocationLinkProps {
   location: typeof RESUME_DATA.location;
@@ -83,16 +83,23 @@ function ContactButtons({ contact, personalWebsiteUrl }: ContactButtonsProps) {
           label="Phone"
         />
       )}
-      {contact.social
-        .filter((social) => social.icon !== null)
-        .map((social) => (
+      {contact.social.map((social) => {
+        // Map social network names to icon components
+        let IconComponent: React.ElementType | null = null;
+        if (social.name === "GitHub") IconComponent = GitHubIcon;
+        else if (social.name === "LinkedIn") IconComponent = LinkedInIcon;
+        else if (social.name === "X") IconComponent = XIcon;
+
+        // Only render if we have a matching icon
+        return IconComponent ? (
           <SocialButton
             key={social.name}
             href={social.url}
-            icon={social.icon}
+            icon={IconComponent}
             label={social.name}
           />
-        ))}
+        ) : null;
+      })}
     </div>
   );
 }

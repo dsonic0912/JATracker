@@ -175,7 +175,8 @@ export function ResumeProvider({
         // Second priority: Check if there's a resume ID in the URL
         if (!idToUse) {
           const urlParams = new URLSearchParams(window.location.search);
-          idToUse = urlParams.get("id");
+          const urlId = urlParams.get("id");
+          if (urlId) idToUse = urlId;
         }
 
         // If there's an ID, fetch that specific resume
