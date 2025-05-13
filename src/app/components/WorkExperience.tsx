@@ -543,13 +543,13 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
     }
   };
 
-  const cardClassName =
-    company === "LBSTek"
-      ? "py-1 print:py-0 print-force-new-page"
-      : "py-1 print:py-0";
+  // const cardClassName =
+  //   company === "LBSTek"
+  //     ? "py-1 print:py-0 print-force-new-page"
+  //     : "py-1 print:py-0";
 
   return (
-    <Card className={cardClassName}>
+    <Card className="py-1 print:py-0">
       <CardHeader className="print:space-y-1">
         <div className="flex items-center justify-between gap-x-2 text-base">
           <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none print:text-sm">

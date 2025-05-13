@@ -55,16 +55,18 @@ export default async function Image() {
           >
             {RESUME_DATA.name}
           </div>
-          <div
-            style={{
-              fontSize: "1.5rem",
-              color: "#666",
-              maxWidth: "600px",
-              lineHeight: "1.4",
-            }}
-          >
-            {RESUME_DATA.about}
-          </div>
+          {RESUME_DATA.about && (
+            <div
+              style={{
+                fontSize: "1.5rem",
+                color: "#666",
+                maxWidth: "600px",
+                lineHeight: "1.4",
+              }}
+            >
+              {RESUME_DATA.about}
+            </div>
+          )}
           <div
             style={{
               display: "flex",

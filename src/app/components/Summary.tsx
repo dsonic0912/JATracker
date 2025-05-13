@@ -18,11 +18,15 @@ export function Summary({ summary, className }: AboutProps) {
   const { updateField, lastUpdated } = useResume();
 
   const handleSummaryUpdate = (newValue: string) => {
-    // When updating the summary, we need to convert the string to a JSX element
-    // to maintain consistency with the data structure
-    const newSummary = <>{newValue}</>;
-    updateField(["summary"], newSummary);
+    // Pass the string value directly to the updateField function
+    // Do not convert to a JSX element as it causes issues with Prisma
+    updateField(["summary"], newValue);
   };
+
+  // Don't render the section at all if summary is empty or null
+  if (!summary) {
+    return null;
+  }
 
   return (
     <Section className={className}>

@@ -23,10 +23,12 @@ export default function ProfilePage() {
               <h3 className="text-sm font-medium">Location</h3>
               <p>{resumeData.location}</p>
             </div>
-            <div>
-              <h3 className="text-sm font-medium">About</h3>
-              <p className="text-sm">{resumeData.about}</p>
-            </div>
+            {resumeData.about && (
+              <div>
+                <h3 className="text-sm font-medium">About</h3>
+                <p className="text-sm">{resumeData.about}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

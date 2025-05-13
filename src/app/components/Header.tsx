@@ -56,6 +56,17 @@ interface ContactButtonsProps {
 }
 
 function ContactButtons({ contact, personalWebsiteUrl }: ContactButtonsProps) {
+  // Check if there are any contact methods to display
+  const hasContactMethods =
+    personalWebsiteUrl ||
+    contact.email ||
+    contact.tel ||
+    (contact.social && contact.social.length > 0);
+
+  if (!hasContactMethods) {
+    return null;
+  }
+
   return (
     <div
       className="flex gap-x-1 pt-1 font-mono text-sm text-foreground/80 print:hidden"
@@ -83,23 +94,24 @@ function ContactButtons({ contact, personalWebsiteUrl }: ContactButtonsProps) {
           label="Phone"
         />
       )}
-      {contact.social.map((social) => {
-        // Map social network names to icon components
-        let IconComponent: React.ElementType | null = null;
-        if (social.name === "GitHub") IconComponent = GitHubIcon;
-        else if (social.name === "LinkedIn") IconComponent = LinkedInIcon;
-        else if (social.name === "X") IconComponent = XIcon;
+      {contact.social &&
+        contact.social.map((social) => {
+          // Map social network names to icon components
+          let IconComponent: React.ElementType | null = null;
+          if (social.name === "GitHub") IconComponent = GitHubIcon;
+          else if (social.name === "LinkedIn") IconComponent = LinkedInIcon;
+          else if (social.name === "X") IconComponent = XIcon;
 
-        // Only render if we have a matching icon
-        return IconComponent ? (
-          <SocialButton
-            key={social.name}
-            href={social.url}
-            icon={IconComponent}
-            label={social.name}
-          />
-        ) : null;
-      })}
+          // Only render if we have a matching icon
+          return IconComponent ? (
+            <SocialButton
+              key={social.name}
+              href={social.url}
+              icon={IconComponent}
+              label={social.name}
+            />
+          ) : null;
+        })}
     </div>
   );
 }
@@ -110,6 +122,11 @@ interface PrintContactProps {
 }
 
 function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
+  // Don't render the component at all if no contact information is available
+  if (!personalWebsiteUrl && !contact.email && !contact.tel) {
+    return null;
+  }
+
   return (
     <div
       className="hidden gap-x-2 font-mono text-sm text-foreground/80 print:flex print:text-[12px]"
@@ -123,7 +140,7 @@ function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
           >
             {new URL(personalWebsiteUrl).hostname}
           </a>
-          <span aria-hidden="true">/</span>
+          {(contact.email || contact.tel) && <span aria-hidden="true">/</span>}
         </>
       )}
       {contact.email && (
@@ -134,7 +151,7 @@ function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
           >
             {contact.email}
           </a>
-          <span aria-hidden="true">/</span>
+          {contact.tel && <span aria-hidden="true">/</span>}
         </>
       )}
       {contact.tel && (
@@ -195,32 +212,46 @@ export function Header() {
         </div>
 
         <div className="flex gap-x-2 font-mono text-sm text-foreground/80">
-          <div className="flex items-center gap-1">
-            <MailIcon className="size-3" aria-hidden="true" />
-            <EditableContent
-              content={resumeData.contact.email}
-              onSave={handleEmailUpdate}
-              className="text-xs"
-            />
-          </div>
-          <span aria-hidden="true">•</span>
-          <div className="flex items-center gap-1">
-            <PhoneIcon className="size-3" aria-hidden="true" />
-            <EditableContent
-              content={resumeData.contact.tel}
-              onSave={handlePhoneUpdate}
-              className="text-xs"
-            />
-          </div>
-          <span aria-hidden="true">•</span>
-          <div className="flex items-center gap-1">
-            <GlobeIcon className="size-3" aria-hidden="true" />
-            <EditableContent
-              content={resumeData.personalWebsiteUrl}
-              onSave={handleWebsiteUpdate}
-              className="text-xs"
-            />
-          </div>
+          {resumeData.contact.email && (
+            <>
+              <div className="flex items-center gap-1">
+                <MailIcon className="size-3" aria-hidden="true" />
+                <EditableContent
+                  content={resumeData.contact.email}
+                  onSave={handleEmailUpdate}
+                  className="text-xs"
+                />
+              </div>
+              {(resumeData.contact.tel || resumeData.personalWebsiteUrl) && (
+                <span aria-hidden="true">•</span>
+              )}
+            </>
+          )}
+          {resumeData.contact.tel && (
+            <>
+              <div className="flex items-center gap-1">
+                <PhoneIcon className="size-3" aria-hidden="true" />
+                <EditableContent
+                  content={resumeData.contact.tel}
+                  onSave={handlePhoneUpdate}
+                  className="text-xs"
+                />
+              </div>
+              {resumeData.personalWebsiteUrl && (
+                <span aria-hidden="true">•</span>
+              )}
+            </>
+          )}
+          {resumeData.personalWebsiteUrl && (
+            <div className="flex items-center gap-1">
+              <GlobeIcon className="size-3" aria-hidden="true" />
+              <EditableContent
+                content={resumeData.personalWebsiteUrl}
+                onSave={handleWebsiteUpdate}
+                className="text-xs"
+              />
+            </div>
+          )}
         </div>
 
         <ContactButtons
