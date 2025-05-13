@@ -3,6 +3,34 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
+    // Skip creating test user during build process
+    if (
+      process.env.NODE_ENV === "production" ||
+      process.env.NEXT_PHASE === "phase-production-build" ||
+      process.env.NEXT_PHASE === "phase-export"
+    ) {
+      console.log("Skipping test user creation during build/export process");
+      return NextResponse.json({
+        success: true,
+        message: "Skipping test user creation during build process",
+        environment: process.env.NODE_ENV,
+        buildPhase: process.env.NEXT_PHASE,
+      });
+    }
+
+    // Check if test user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: "test@example.com" },
+    });
+
+    if (existingUser) {
+      return NextResponse.json({
+        success: true,
+        message: "Test user already exists",
+        data: existingUser,
+      });
+    }
+
     // Create a test user
     const user = await prisma.user.create({
       data: {
