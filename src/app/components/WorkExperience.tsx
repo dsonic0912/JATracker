@@ -243,7 +243,7 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
             <li key={`${badge}-${index}`} className="group relative">
               <Badge
                 variant="secondary"
-                className="pr-5 align-middle text-xs print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
+                className="pr-5 align-middle text-xs print:px-1.5 print:py-1 print:text-[10px] print:leading-tight"
               >
                 {badge}
                 {isEditMode && (
@@ -556,7 +556,7 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
   //     : "py-1 print:py-0";
 
   return (
-    <Card className="py-1 print:py-0">
+    <Card className="py-1 print:mb-2 print:py-0">
       <CardHeader className="print:space-y-1">
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between gap-x-2 text-base">
@@ -884,7 +884,7 @@ export function WorkExperience({ work }: WorkExperienceProps) {
         )}
       </div>
       <div
-        className="space-y-4 print:space-y-0"
+        className="space-y-4 print:space-y-3"
         role="feed"
         aria-labelledby="work-experience"
       >
