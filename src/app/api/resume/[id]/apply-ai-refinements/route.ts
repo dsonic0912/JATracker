@@ -396,26 +396,47 @@ export async function POST(
             );
           }
 
-          // Create the work experience with a default description if missing
+          // Find matching work experience in original resume to use as fallback for missing fields
+          const originalWork = originalResume.work.find(
+            (ow: any) => ow.company === work.company && ow.title === work.title,
+          );
+
+          // Log start date information for debugging
+          if (!work.start) {
+            if (originalWork) {
+              console.log(
+                `Start date missing for ${work.title} at ${work.company}, using original: ${originalWork.start}`,
+              );
+            } else {
+              console.warn(
+                `Start date missing for ${work.title} at ${work.company} and no matching original work found`,
+              );
+            }
+          }
+
+          // Create the work experience with fallbacks for missing fields
           const newWork = await prisma.work.create({
             data: {
               resumeId: newResume.id,
               company: work.company,
-              link: work.link || null,
+              link: work.link || (originalWork ? originalWork.link : null),
               title: work.title,
-              start: work.start || "",
-              end: work.end || null,
+              // Use original start date as fallback if missing in refinements
+              start: work.start || (originalWork ? originalWork.start : ""),
+              end: work.end || (originalWork ? originalWork.end : null),
               description:
                 typeof work.description === "object"
                   ? JSON.stringify(work.description)
                   : work.description
                     ? String(work.description)
-                    : `${work.title} at ${work.company}`, // Default description if missing
+                    : originalWork
+                      ? originalWork.description
+                      : `${work.title} at ${work.company}`, // Default description if missing
             },
           });
 
           console.log(
-            `Created work experience: ${work.title} at ${work.company}`,
+            `Created work experience: ${work.title} at ${work.company} with start date: ${newWork.start}`,
           );
 
           // Check if badges are missing
@@ -505,11 +526,7 @@ export async function POST(
           } catch (error) {
             console.error(`Error adding badges for ${work.title}:`, error);
 
-            // Try to find matching work experience in original resume to copy badges
-            const originalWork = originalResume.work.find(
-              (ow: any) =>
-                ow.company === work.company && ow.title === work.title,
-            );
+            // We already have originalWork from earlier, no need to find it again
 
             if (
               originalWork &&

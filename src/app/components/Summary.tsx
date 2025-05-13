@@ -15,7 +15,7 @@ interface AboutProps {
  * Displays a summary of professional experience and goals
  */
 export function Summary({ summary, className }: AboutProps) {
-  const { updateField } = useResume();
+  const { updateField, lastUpdated } = useResume();
 
   const handleSummaryUpdate = (newValue: string) => {
     // When updating the summary, we need to convert the string to a JSX element
@@ -34,6 +34,7 @@ export function Summary({ summary, className }: AboutProps) {
         aria-labelledby="about-section"
       >
         <EditableContent
+          key={`summary-${lastUpdated || Date.now()}`}
           content={summary}
           onSave={handleSummaryUpdate}
           multiline={true}

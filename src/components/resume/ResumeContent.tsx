@@ -85,6 +85,7 @@ function ResumeContentInner({ resumeId }: ResumeContentProps) {
   const [error, setError] = useState<string | null>(null);
   const { isEditMode } = useEditMode();
   const [resumeIdState, setResumeIdState] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
 
   // Function to update a field at a specific path
   const updateField = async (path: string[], value: any) => {
@@ -132,6 +133,8 @@ function ResumeContentInner({ resumeId }: ResumeContentProps) {
       if (result.data) {
         const transformedData = transformDatabaseResume(result.data);
         setResumeData(transformedData);
+        // Update the timestamp to trigger re-renders
+        setLastUpdated(Date.now());
       }
     } catch (err) {
       console.error("Error updating resume:", err);
@@ -144,6 +147,8 @@ function ResumeContentInner({ resumeId }: ResumeContentProps) {
       if (result.data) {
         const transformedData = transformDatabaseResume(result.data);
         setResumeData(transformedData);
+        // Update the timestamp to trigger re-renders
+        setLastUpdated(Date.now());
       }
     }
   };
@@ -241,15 +246,28 @@ function ResumeContentInner({ resumeId }: ResumeContentProps) {
           resumeData={resumeData}
           updateField={updateField}
           resumeId={resumeIdState}
+          lastUpdated={lastUpdated}
         >
           <div className="mx-auto w-full max-w-2xl space-y-6 bg-white">
             <ResumeHeader />
 
             <div className="space-y-6">
-              <ResumeSummary summary={resumeData.summary} />
-              <WorkExperience work={resumeData.work} />
-              <Projects projects={resumeData.projects} />
-              <Education education={resumeData.education} />
+              <ResumeSummary
+                key={`summary-section-${lastUpdated || Date.now()}`}
+                summary={resumeData.summary}
+              />
+              <WorkExperience
+                key={`work-section-${lastUpdated || Date.now()}`}
+                work={resumeData.work}
+              />
+              <Projects
+                key={`projects-section-${lastUpdated || Date.now()}`}
+                projects={resumeData.projects}
+              />
+              <Education
+                key={`education-section-${lastUpdated || Date.now()}`}
+                education={resumeData.education}
+              />
             </div>
           </div>
         </ResumeContextProvider>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { WorkExperience } from "./WorkExperience";
 import { Projects } from "./Projects";
 import { Education } from "./Education";
@@ -44,7 +44,15 @@ function getCommandMenuLinks(resumeData: typeof RESUME_DATA) {
 
 function EmbeddedResumeContent({ resumeId }: EmbeddedResumeProps) {
   const { isEditMode } = useEditMode();
-  const { resumeData, loading, error } = useResume();
+  const { resumeData, loading, error, lastUpdated } = useResume();
+
+  // This effect will run whenever lastUpdated changes, forcing a re-render
+  useEffect(() => {
+    console.log(
+      "Resume data updated at:",
+      new Date(lastUpdated || Date.now()).toLocaleTimeString(),
+    );
+  }, [lastUpdated]);
 
   if (loading) {
     return (
@@ -98,9 +106,18 @@ function EmbeddedResumeContent({ resumeId }: EmbeddedResumeProps) {
 
             <div className="space-y-6">
               <Summary summary={resumeData.summary} />
-              <WorkExperience work={resumeData.work} />
-              <Projects projects={resumeData.projects} />
-              <Education education={resumeData.education} />
+              <WorkExperience
+                key={`work-section-${lastUpdated || Date.now()}`}
+                work={resumeData.work}
+              />
+              <Projects
+                key={`projects-section-${lastUpdated || Date.now()}`}
+                projects={resumeData.projects}
+              />
+              <Education
+                key={`education-section-${lastUpdated || Date.now()}`}
+                education={resumeData.education}
+              />
             </div>
           </section>
         </CardContent>

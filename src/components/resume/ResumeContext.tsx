@@ -8,6 +8,7 @@ type ResumeContextType = {
   resumeData: typeof RESUME_DATA;
   updateField: (path: string[], value: any) => Promise<void>;
   resumeId: string | null;
+  lastUpdated?: number; // Timestamp to track updates
 };
 
 // Create the context
@@ -19,14 +20,18 @@ export function ResumeContextProvider({
   resumeData,
   updateField,
   resumeId,
+  lastUpdated,
 }: {
   children: ReactNode;
   resumeData: typeof RESUME_DATA;
   updateField: (path: string[], value: any) => Promise<void>;
   resumeId: string | null;
+  lastUpdated?: number;
 }) {
   return (
-    <ResumeContext.Provider value={{ resumeData, updateField, resumeId }}>
+    <ResumeContext.Provider
+      value={{ resumeData, updateField, resumeId, lastUpdated }}
+    >
       {children}
     </ResumeContext.Provider>
   );
@@ -36,7 +41,9 @@ export function ResumeContextProvider({
 export function useResumeContext() {
   const context = useContext(ResumeContext);
   if (context === undefined) {
-    throw new Error("useResumeContext must be used within a ResumeContextProvider");
+    throw new Error(
+      "useResumeContext must be used within a ResumeContextProvider",
+    );
   }
   return context;
 }

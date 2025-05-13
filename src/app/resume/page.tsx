@@ -9,7 +9,8 @@ import { Projects } from "../components/Projects";
 import { Education } from "../components/Education";
 import { Summary } from "../components/Summary";
 import { Header as ResumeHeader } from "../components/Header";
-import { useEditMode } from "@/context/edit-mode-context";
+import { EditModeProvider, useEditMode } from "@/context/edit-mode-context";
+import { ResumeProvider, useResume } from "@/context/resume-context";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
@@ -124,51 +125,60 @@ function getCommandMenuLinks(resumeData: typeof RESUME_DATA) {
   ];
 }
 
+// Main wrapper component that provides the context
 export default function ResumePage() {
-  const { isEditMode } = useEditMode();
-  const [resumeData, setResumeData] = useState(RESUME_DATA);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Get the resume ID from the URL
+  const [resumeId, setResumeId] = useState<string | null>(null);
 
-  // Directly fetch the resume based on the URL parameter
   useEffect(() => {
-    const fetchResumeFromUrl = async () => {
-      try {
-        setLoading(true);
-
-        // Get the resume ID from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const resumeId = urlParams.get("id");
-
-        if (!resumeId) {
-          throw new Error("No resume ID found in URL");
-        }
-
-        // Fetch the resume data
-        const response = await fetch(`/api/resume/${resumeId}`);
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || "Failed to fetch resume");
-        }
-
-        if (result.data) {
-          // Transform the database resume to match the expected format
-          const transformedData = transformDatabaseResume(result.data);
-          setResumeData(transformedData);
-        } else {
-          throw new Error("No resume data found");
-        }
-      } catch (err) {
-        console.error("Error fetching resume:", err);
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchResumeFromUrl();
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    if (id) {
+      setResumeId(id);
+    } else {
+      console.error("No resume ID found in URL");
+    }
   }, []);
+
+  if (!resumeId) {
+    return (
+      <DashboardLayout title="Resume">
+        <div className="container flex h-screen items-center justify-center">
+          <div className="max-w-md rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+            <h2 className="mb-2 text-xl font-semibold text-red-700">
+              Error Loading Resume
+            </h2>
+            <p className="mb-4 text-red-600">No resume ID found in URL</p>
+            <Link href="/resumes">
+              <Button>Go to Resumes</Button>
+            </Link>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  return (
+    <EditModeProvider>
+      <ResumeProvider resumeId={resumeId}>
+        <ResumePageContent />
+      </ResumeProvider>
+    </EditModeProvider>
+  );
+}
+
+// Inner component that uses the context
+function ResumePageContent() {
+  const { isEditMode } = useEditMode();
+  const { resumeData, loading, error, lastUpdated } = useResume();
+
+  // Log when the resume data is updated
+  useEffect(() => {
+    console.log(
+      "Resume page data updated at:",
+      new Date(lastUpdated || Date.now()).toLocaleTimeString(),
+    );
+  }, [lastUpdated]);
 
   if (loading) {
     return (
@@ -234,13 +244,22 @@ export default function ResumePage() {
           <div className="space-y-8 print:space-y-4">
             <Summary summary={resumeData.summary} />
 
-            <WorkExperience work={resumeData.work} />
+            <WorkExperience
+              key={`work-section-${lastUpdated || Date.now()}`}
+              work={resumeData.work}
+            />
 
             {/* <Skills /> */}
 
-            <Projects projects={resumeData.projects} />
+            <Projects
+              key={`projects-section-${lastUpdated || Date.now()}`}
+              projects={resumeData.projects}
+            />
 
-            <Education education={resumeData.education} />
+            <Education
+              key={`education-section-${lastUpdated || Date.now()}`}
+              education={resumeData.education}
+            />
           </div>
         </section>
 

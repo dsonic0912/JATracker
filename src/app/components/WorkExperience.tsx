@@ -806,10 +806,10 @@ interface WorkExperienceProps {
  * Renders a list of work experiences in chronological order
  */
 export function WorkExperience({ work }: WorkExperienceProps) {
-  const { resumeData, updateField } = useResume();
+  const { resumeData, updateField, lastUpdated } = useResume();
   const { isEditMode } = useEditMode();
 
-  const handleAddWork = () => {
+  const handleAddWork = async () => {
     // Get current year for the start date
     const currentYear = new Date().getFullYear();
 
@@ -827,7 +827,14 @@ export function WorkExperience({ work }: WorkExperienceProps) {
 
     // Add the new work experience to the beginning of the array
     const updatedWork = [newWork, ...resumeData.work];
-    updateField(["work"], updatedWork);
+
+    console.log("Adding new work experience:", newWork);
+    console.log("Updated work array length:", updatedWork.length);
+
+    // Wait for the update to complete
+    await updateField(["work"], updatedWork);
+
+    console.log("Work experience added successfully");
   };
 
   return (
@@ -838,7 +845,10 @@ export function WorkExperience({ work }: WorkExperienceProps) {
         </h2>
         {isEditMode && (
           <button
-            onClick={handleAddWork}
+            onClick={async (e) => {
+              e.preventDefault();
+              await handleAddWork();
+            }}
             className="rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground hover:bg-primary/90"
           >
             Add Work +
@@ -851,7 +861,10 @@ export function WorkExperience({ work }: WorkExperienceProps) {
         aria-labelledby="work-experience"
       >
         {work.map((item) => (
-          <article key={`${item.company}-${item.start}`} role="article">
+          <article
+            key={`${item.company}-${item.start}-${lastUpdated || Date.now()}`}
+            role="article"
+          >
             <WorkExperienceItem work={item} />
           </article>
         ))}

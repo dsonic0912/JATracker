@@ -296,10 +296,10 @@ interface ProjectsProps {
  * Section component displaying all side projects
  */
 export function Projects({ projects }: ProjectsProps) {
-  const { resumeData, updateField } = useResume();
+  const { resumeData, updateField, lastUpdated } = useResume();
   const { isEditMode } = useEditMode();
 
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     const newProject = {
       title: "New Project",
       techStack: ["Tech 1", "Tech 2"],
@@ -313,7 +313,14 @@ export function Projects({ projects }: ProjectsProps) {
 
     // Add the new project to the beginning of the array
     const updatedProjects = [newProject, ...resumeData.projects];
-    updateField(["projects"], updatedProjects);
+
+    console.log("Adding new project:", newProject);
+    console.log("Updated projects array length:", updatedProjects.length);
+
+    // Wait for the update to complete
+    await updateField(["projects"], updatedProjects);
+
+    console.log("Project added successfully");
   };
 
   return (
@@ -324,7 +331,10 @@ export function Projects({ projects }: ProjectsProps) {
         </h2>
         {isEditMode && (
           <button
-            onClick={handleAddProject}
+            onClick={async (e) => {
+              e.preventDefault();
+              await handleAddProject();
+            }}
             className="rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground hover:bg-primary/90"
           >
             Add Project +
@@ -337,7 +347,10 @@ export function Projects({ projects }: ProjectsProps) {
         aria-labelledby="side-projects"
       >
         {projects.map((project) => (
-          <article key={project.title} className="h-full">
+          <article
+            key={`${project.title}-${lastUpdated || Date.now()}`}
+            className="h-full"
+          >
             <ProjectCard
               title={project.title}
               description={project.description}

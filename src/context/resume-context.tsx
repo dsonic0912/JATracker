@@ -17,6 +17,7 @@ type ResumeContextType = {
   loading: boolean;
   error: string | null;
   resumeId: string | null;
+  lastUpdated: number; // Timestamp to track updates
 };
 
 // Create the context
@@ -162,6 +163,7 @@ export function ResumeProvider({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [resumeId, setResumeId] = useState<string | null>(propResumeId || null);
+  const [lastUpdated, setLastUpdated] = useState<number>(Date.now());
 
   // Fetch resume data from the API
   useEffect(() => {
@@ -286,6 +288,8 @@ export function ResumeProvider({
       if (result.data) {
         const transformedData = transformDatabaseResume(result.data);
         setResumeData(transformedData);
+        // Update the timestamp to trigger re-renders
+        setLastUpdated(Date.now());
       }
     } catch (err) {
       console.error("Error updating resume:", err);
@@ -298,13 +302,15 @@ export function ResumeProvider({
       if (result.data) {
         const transformedData = transformDatabaseResume(result.data);
         setResumeData(transformedData);
+        // Update the timestamp to trigger re-renders
+        setLastUpdated(Date.now());
       }
     }
   };
 
   return (
     <ResumeContext.Provider
-      value={{ resumeData, updateField, loading, error, resumeId }}
+      value={{ resumeData, updateField, loading, error, resumeId, lastUpdated }}
     >
       {children}
     </ResumeContext.Provider>

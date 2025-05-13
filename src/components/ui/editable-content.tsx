@@ -64,6 +64,13 @@ export function EditableContent({
 
   const contentAsString = extractTextFromReactNode(content);
 
+  // Update the edited content when the content prop changes
+  useEffect(() => {
+    if (!isEditing && !isDialogOpen) {
+      setEditedContent(contentAsString);
+    }
+  }, [content, contentAsString, isEditing, isDialogOpen]);
+
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
@@ -81,12 +88,18 @@ export function EditableContent({
   };
 
   const handleSave = () => {
-    onSave(editedContent);
+    // Only save if content has actually changed
+    if (editedContent !== contentAsString) {
+      onSave(editedContent);
+    }
     setIsEditing(false);
   };
 
   const handleDialogSave = () => {
-    onSave(editedContent);
+    // Only save if content has actually changed
+    if (editedContent !== contentAsString) {
+      onSave(editedContent);
+    }
     setIsDialogOpen(false);
   };
 

@@ -179,10 +179,10 @@ interface EducationListProps {
  * Renders a list of education experiences
  */
 export function Education({ education }: EducationListProps) {
-  const { resumeData, updateField } = useResume();
+  const { resumeData, updateField, lastUpdated } = useResume();
   const { isEditMode } = useEditMode();
 
-  const handleAddEducation = () => {
+  const handleAddEducation = async () => {
     // Get current year for default dates
     const currentYear = new Date().getFullYear();
 
@@ -195,7 +195,14 @@ export function Education({ education }: EducationListProps) {
 
     // Add the new education to the beginning of the array
     const updatedEducation = [newEducation, ...resumeData.education];
-    updateField(["education"], updatedEducation);
+
+    console.log("Adding new education:", newEducation);
+    console.log("Updated education array length:", updatedEducation.length);
+
+    // Wait for the update to complete
+    await updateField(["education"], updatedEducation);
+
+    console.log("Education added successfully");
   };
 
   return (
@@ -206,7 +213,10 @@ export function Education({ education }: EducationListProps) {
         </h2>
         {isEditMode && (
           <button
-            onClick={handleAddEducation}
+            onClick={async (e) => {
+              e.preventDefault();
+              await handleAddEducation();
+            }}
             className="rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground hover:bg-primary/90"
           >
             Add Education +
@@ -219,7 +229,10 @@ export function Education({ education }: EducationListProps) {
         aria-labelledby="education-section"
       >
         {education.map((item) => (
-          <article key={item.school} role="article">
+          <article
+            key={`${item.school}-${lastUpdated || Date.now()}`}
+            role="article"
+          >
             <EducationItem education={item} />
           </article>
         ))}
