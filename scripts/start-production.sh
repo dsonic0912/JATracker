@@ -41,4 +41,4 @@ echo "OPENAI_API_KEY: ${OPENAI_API_KEY:0:4}...${OPENAI_API_KEY: -4} (${#OPENAI_A
 
 # Start the production server
 echo "Starting production server..."
-next start
+next start -p 5000 -H 0.0.0.0
