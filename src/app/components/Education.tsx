@@ -119,18 +119,22 @@ function EducationItem({ education }: EducationItemProps) {
               </Button>
             )}
           </div>
-          <div className="text-sm tabular-nums text-gray-500">
-            <EditableContent
-              content={start}
-              onSave={handleStartUpdate}
-              className="inline"
-            />{" "}
-            -{" "}
-            <EditableContent
-              content={end}
-              onSave={handleEndUpdate}
-              className="inline"
-            />
+          <div className="flex items-center text-sm tabular-nums text-gray-500">
+            <span className="inline-flex items-center">
+              <EditableContent
+                content={start}
+                onSave={handleStartUpdate}
+                className="inline"
+              />
+            </span>
+            <span className="mx-1">-</span>
+            <span className="inline-flex items-center">
+              <EditableContent
+                content={end}
+                onSave={handleEndUpdate}
+                className="inline"
+              />
+            </span>
           </div>
         </div>
       </CardHeader>

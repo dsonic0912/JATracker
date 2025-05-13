@@ -29,6 +29,18 @@ export async function POST(
       );
     }
 
+    // Get the job application to access the company name
+    const jobApplication = await prisma.jobApplication.findUnique({
+      where: { id: jobApplicationId },
+    });
+
+    if (!jobApplication) {
+      return NextResponse.json(
+        { error: "Job application not found" },
+        { status: 404 },
+      );
+    }
+
     // Log refinements data
     console.log("Refinements data structure:", {
       hasName: !!refinements.name,
@@ -199,7 +211,7 @@ export async function POST(
         name: refinements.name || originalResume.name,
         title: `${
           refinements.title || originalResume.title || originalResume.name
-        } (AI Refined)`,
+        } (AI Refined for ${jobApplication.company})`,
         initials: originalResume.initials,
         location: refinements.location || originalResume.location,
         locationLink: originalResume.locationLink,
