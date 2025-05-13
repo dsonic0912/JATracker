@@ -87,6 +87,7 @@ model Work {
   company     String
   link        String?
   title       String
+  location    String?
   start       String
   end         String? // Make end optional
   description String

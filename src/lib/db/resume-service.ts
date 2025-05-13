@@ -565,7 +565,9 @@ export const resumeService = {
     }
 
     // Handle other fields
-    if (["company", "link", "title", "start", "end"].includes(field)) {
+    if (
+      ["company", "link", "title", "location", "start", "end"].includes(field)
+    ) {
       await prisma.work.update({
         where: { id: workId },
         data: { [field]: value },

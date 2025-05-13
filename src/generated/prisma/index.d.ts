@@ -8185,6 +8185,7 @@ export namespace Prisma {
     company: string | null
     link: string | null
     title: string | null
+    location: string | null
     start: string | null
     end: string | null
     description: string | null
@@ -8198,6 +8199,7 @@ export namespace Prisma {
     company: string | null
     link: string | null
     title: string | null
+    location: string | null
     start: string | null
     end: string | null
     description: string | null
@@ -8211,6 +8213,7 @@ export namespace Prisma {
     company: number
     link: number
     title: number
+    location: number
     start: number
     end: number
     description: number
@@ -8226,6 +8229,7 @@ export namespace Prisma {
     company?: true
     link?: true
     title?: true
+    location?: true
     start?: true
     end?: true
     description?: true
@@ -8239,6 +8243,7 @@ export namespace Prisma {
     company?: true
     link?: true
     title?: true
+    location?: true
     start?: true
     end?: true
     description?: true
@@ -8252,6 +8257,7 @@ export namespace Prisma {
     company?: true
     link?: true
     title?: true
+    location?: true
     start?: true
     end?: true
     description?: true
@@ -8338,6 +8344,7 @@ export namespace Prisma {
     company: string
     link: string | null
     title: string
+    location: string | null
     start: string
     end: string | null
     description: string
@@ -8368,6 +8375,7 @@ export namespace Prisma {
     company?: boolean
     link?: boolean
     title?: boolean
+    location?: boolean
     start?: boolean
     end?: boolean
     description?: boolean
@@ -8385,6 +8393,7 @@ export namespace Prisma {
     company?: boolean
     link?: boolean
     title?: boolean
+    location?: boolean
     start?: boolean
     end?: boolean
     description?: boolean
@@ -8399,6 +8408,7 @@ export namespace Prisma {
     company?: boolean
     link?: boolean
     title?: boolean
+    location?: boolean
     start?: boolean
     end?: boolean
     description?: boolean
@@ -8413,6 +8423,7 @@ export namespace Prisma {
     company?: boolean
     link?: boolean
     title?: boolean
+    location?: boolean
     start?: boolean
     end?: boolean
     description?: boolean
@@ -8420,7 +8431,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type WorkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "company" | "link" | "title" | "start" | "end" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["work"]>
+  export type WorkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "company" | "link" | "title" | "location" | "start" | "end" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["work"]>
   export type WorkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     resume?: boolean | ResumeDefaultArgs<ExtArgs>
     tasks?: boolean | Work$tasksArgs<ExtArgs>
@@ -8447,6 +8458,7 @@ export namespace Prisma {
       company: string
       link: string | null
       title: string
+      location: string | null
       start: string
       end: string | null
       description: string
@@ -8883,6 +8895,7 @@ export namespace Prisma {
     readonly company: FieldRef<"Work", 'String'>
     readonly link: FieldRef<"Work", 'String'>
     readonly title: FieldRef<"Work", 'String'>
+    readonly location: FieldRef<"Work", 'String'>
     readonly start: FieldRef<"Work", 'String'>
     readonly end: FieldRef<"Work", 'String'>
     readonly description: FieldRef<"Work", 'String'>
@@ -19120,6 +19133,7 @@ export namespace Prisma {
     company: 'company',
     link: 'link',
     title: 'title',
+    location: 'location',
     start: 'start',
     end: 'end',
     description: 'description',
@@ -19671,6 +19685,7 @@ export namespace Prisma {
     company?: StringFilter<"Work"> | string
     link?: StringNullableFilter<"Work"> | string | null
     title?: StringFilter<"Work"> | string
+    location?: StringNullableFilter<"Work"> | string | null
     start?: StringFilter<"Work"> | string
     end?: StringNullableFilter<"Work"> | string | null
     description?: StringFilter<"Work"> | string
@@ -19687,6 +19702,7 @@ export namespace Prisma {
     company?: SortOrder
     link?: SortOrderInput | SortOrder
     title?: SortOrder
+    location?: SortOrderInput | SortOrder
     start?: SortOrder
     end?: SortOrderInput | SortOrder
     description?: SortOrder
@@ -19706,6 +19722,7 @@ export namespace Prisma {
     company?: StringFilter<"Work"> | string
     link?: StringNullableFilter<"Work"> | string | null
     title?: StringFilter<"Work"> | string
+    location?: StringNullableFilter<"Work"> | string | null
     start?: StringFilter<"Work"> | string
     end?: StringNullableFilter<"Work"> | string | null
     description?: StringFilter<"Work"> | string
@@ -19722,6 +19739,7 @@ export namespace Prisma {
     company?: SortOrder
     link?: SortOrderInput | SortOrder
     title?: SortOrder
+    location?: SortOrderInput | SortOrder
     start?: SortOrder
     end?: SortOrderInput | SortOrder
     description?: SortOrder
@@ -19741,6 +19759,7 @@ export namespace Prisma {
     company?: StringWithAggregatesFilter<"Work"> | string
     link?: StringNullableWithAggregatesFilter<"Work"> | string | null
     title?: StringWithAggregatesFilter<"Work"> | string
+    location?: StringNullableWithAggregatesFilter<"Work"> | string | null
     start?: StringWithAggregatesFilter<"Work"> | string
     end?: StringNullableWithAggregatesFilter<"Work"> | string | null
     description?: StringWithAggregatesFilter<"Work"> | string
@@ -20709,6 +20728,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -20725,6 +20745,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -20739,6 +20760,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -20755,6 +20777,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -20770,6 +20793,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -20782,6 +20806,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -20795,6 +20820,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -21782,6 +21808,7 @@ export namespace Prisma {
     company?: SortOrder
     link?: SortOrder
     title?: SortOrder
+    location?: SortOrder
     start?: SortOrder
     end?: SortOrder
     description?: SortOrder
@@ -21795,6 +21822,7 @@ export namespace Prisma {
     company?: SortOrder
     link?: SortOrder
     title?: SortOrder
+    location?: SortOrder
     start?: SortOrder
     end?: SortOrder
     description?: SortOrder
@@ -21808,6 +21836,7 @@ export namespace Prisma {
     company?: SortOrder
     link?: SortOrder
     title?: SortOrder
+    location?: SortOrder
     start?: SortOrder
     end?: SortOrder
     description?: SortOrder
@@ -23230,6 +23259,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -23244,6 +23274,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -23508,6 +23539,7 @@ export namespace Prisma {
     company?: StringFilter<"Work"> | string
     link?: StringNullableFilter<"Work"> | string | null
     title?: StringFilter<"Work"> | string
+    location?: StringNullableFilter<"Work"> | string | null
     start?: StringFilter<"Work"> | string
     end?: StringNullableFilter<"Work"> | string | null
     description?: StringFilter<"Work"> | string
@@ -24190,6 +24222,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -24205,6 +24238,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -24234,6 +24268,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -24249,6 +24284,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -24262,6 +24298,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -24277,6 +24314,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -24306,6 +24344,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -24321,6 +24360,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -25277,6 +25317,7 @@ export namespace Prisma {
     company: string
     link?: string | null
     title: string
+    location?: string | null
     start: string
     end?: string | null
     description: string
@@ -25360,6 +25401,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -25374,6 +25416,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -25388,6 +25431,7 @@ export namespace Prisma {
     company?: StringFieldUpdateOperationsInput | string
     link?: NullableStringFieldUpdateOperationsInput | string | null
     title?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
     start?: StringFieldUpdateOperationsInput | string
     end?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string

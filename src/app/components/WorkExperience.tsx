@@ -118,9 +118,10 @@ function extractTasksFromDescription(description: any): WorkTask[] {
   return tasks;
 }
 
-// Extend the WorkExperience type to include tasks
+// Extend the WorkExperience type to include tasks and location
 type WorkExperience = (typeof RESUME_DATA)["work"][number] & {
   tasks?: WorkTask[];
+  location?: string;
 };
 type WorkBadges = readonly string[];
 type WorkTask = { id?: string; description: string };
@@ -381,7 +382,7 @@ interface WorkExperienceItemProps {
  * Handles responsive layout for badges (mobile/desktop)
  */
 function WorkExperienceItem({ work }: WorkExperienceItemProps) {
-  const { company, link, badges, title, start, end } = work;
+  const { company, link, badges, title, location, start, end } = work;
   // Ensure description is treated as a string
   const description =
     typeof work.description === "string"
@@ -430,6 +431,12 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
   const handleEndUpdate = (newValue: string) => {
     if (workIndex !== -1) {
       updateField(["work", workIndex.toString(), "end"], newValue || null);
+    }
+  };
+
+  const handleLocationUpdate = (newValue: string) => {
+    if (workIndex !== -1) {
+      updateField(["work", workIndex.toString(), "location"], newValue || null);
     }
   };
 
@@ -609,9 +616,20 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
           </div>
 
           <div className="flex items-center justify-between">
-            <h4 className="font-mono text-sm font-semibold leading-none print:text-[14px]">
-              <EditableContent content={title} onSave={handleTitleUpdate} />
-            </h4>
+            <div className="flex flex-col">
+              <h4 className="font-mono text-sm font-semibold leading-none print:text-[14px]">
+                <EditableContent content={title} onSave={handleTitleUpdate} />
+              </h4>
+              {(location || isEditMode) && (
+                <div className="mt-1 text-xs text-muted-foreground">
+                  <EditableContent
+                    content={location || "Add location"}
+                    onSave={handleLocationUpdate}
+                    placeholder="Add location"
+                  />
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center space-x-1 text-sm tabular-nums text-gray-500">
               <span className="inline-flex items-center">
@@ -827,6 +845,7 @@ export function WorkExperience({ work }: WorkExperienceProps) {
       link: "#",
       badges: [], // Initialize with an empty array to allow adding badges later
       title: "Job Title",
+      location: "Location", // Add default location
       logo: null,
       start: currentYear.toString(), // Use current year as default
       end: null,

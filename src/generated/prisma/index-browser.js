@@ -177,6 +177,7 @@ exports.Prisma.WorkScalarFieldEnum = {
   company: 'company',
   link: 'link',
   title: 'title',
+  location: 'location',
   start: 'start',
   end: 'end',
   description: 'description',
