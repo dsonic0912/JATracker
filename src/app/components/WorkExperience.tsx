@@ -551,78 +551,87 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
   return (
     <Card className="py-1 print:py-0">
       <CardHeader className="print:space-y-1">
-        <div className="flex items-center justify-between gap-x-2 text-base">
-          <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none print:text-sm">
-            <div className="flex items-center">
-              {isEditMode ? (
-                <EditableContent
-                  content={company}
-                  onSave={handleCompanyUpdate}
-                />
-              ) : (
-                <CompanyLink company={company} link={link} />
-              )}
-              {isEditMode && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-1 h-6 w-6 p-0"
-                  onClick={openLinkDialog}
-                  title="Edit company link"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-3 w-3"
+        <div className="flex flex-col gap-y-1">
+          <div className="flex items-center justify-between gap-x-2 text-base">
+            <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none print:text-sm">
+              <div className="flex items-center">
+                {isEditMode ? (
+                  <EditableContent
+                    content={company}
+                    onSave={handleCompanyUpdate}
+                  />
+                ) : (
+                  <CompanyLink company={company} link={link} />
+                )}
+                {isEditMode && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-1 h-6 w-6 p-0"
+                    onClick={openLinkDialog}
+                    title="Edit company link"
                   >
-                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                  </svg>
-                </Button>
-              )}
-              {isEditMode && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-1 h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                  title="Delete work experience"
-                >
-                  <Trash2Icon className="h-3 w-3" />
-                </Button>
-              )}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-3 w-3"
+                    >
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                  </Button>
+                )}
+                {isEditMode && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-1 h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+                    onClick={() => setIsDeleteDialogOpen(true)}
+                    title="Delete work experience"
+                  >
+                    <Trash2Icon className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+              <BadgeList
+                className="hidden gap-x-1 sm:inline-flex"
+                badges={badges}
+                workIndex={workIndex}
+              />
+            </h3>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <h4 className="font-mono text-sm font-semibold leading-none print:text-[14px]">
+              <EditableContent content={title} onSave={handleTitleUpdate} />
+            </h4>
+
+            <div className="flex items-center space-x-1 text-sm tabular-nums text-gray-500">
+              <span className="inline-flex items-center">
+                <EditableContent
+                  content={start}
+                  onSave={handleStartUpdate}
+                  className="inline"
+                />
+              </span>
+              <span>-</span>
+              <span className="inline-flex items-center">
+                <EditableContent
+                  content={end || "Present"}
+                  onSave={handleEndUpdate}
+                  className="inline"
+                />
+              </span>
             </div>
-            <BadgeList
-              className="hidden gap-x-1 sm:inline-flex"
-              badges={badges}
-              workIndex={workIndex}
-            />
-          </h3>
-          <div className="text-sm tabular-nums text-gray-500">
-            <EditableContent
-              content={start}
-              onSave={handleStartUpdate}
-              className="inline"
-            />{" "}
-            -{" "}
-            <EditableContent
-              content={end || "Present"}
-              onSave={handleEndUpdate}
-              className="inline"
-            />
           </div>
         </div>
-
-        <h4 className="font-mono text-sm font-semibold leading-none print:text-[14px]">
-          <EditableContent content={title} onSave={handleTitleUpdate} />
-        </h4>
       </CardHeader>
 
       <CardContent>
