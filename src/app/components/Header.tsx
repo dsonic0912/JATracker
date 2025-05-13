@@ -1,7 +1,7 @@
 "use client";
 
+import React from "react";
 import { GlobeIcon, MailIcon, PhoneIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { RESUME_DATA } from "@/data/resume-data";
 import { EditableContent } from "@/components/ui/editable-content";
 import { useResume } from "@/context/resume-context";
@@ -30,23 +30,43 @@ function LocationLink({ location, locationLink }: LocationLinkProps) {
 }
 
 interface SocialButtonProps {
-  href: string;
+  url: string;
   icon: React.ElementType;
-  label: string;
+  name: string;
+  index: number;
+  onUpdate: (index: number, field: string, value: string) => void;
 }
 
-function SocialButton({ href, icon: Icon, label }: SocialButtonProps) {
+function SocialButton({
+  url,
+  icon: Icon,
+  name,
+  index,
+  onUpdate,
+}: SocialButtonProps) {
+  const handleNameUpdate = (newValue: string) => {
+    onUpdate(index, "name", newValue);
+  };
+
+  const handleUrlUpdate = (newValue: string) => {
+    onUpdate(index, "url", newValue);
+  };
+
   return (
-    <Button className="size-8" variant="outline" size="icon" asChild>
-      <a
-        href={href}
-        aria-label={label}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Icon className="size-4" aria-hidden="true" />
-      </a>
-    </Button>
+    <div className="flex items-center gap-1">
+      <Icon className="size-3" aria-hidden="true" />
+      <EditableContent
+        content={name}
+        onSave={handleNameUpdate}
+        className="text-xs"
+      />
+      <span className="text-xs">:</span>
+      <EditableContent
+        content={url}
+        onSave={handleUrlUpdate}
+        className="text-xs"
+      />
+    </div>
   );
 }
 
@@ -56,59 +76,45 @@ interface ContactButtonsProps {
 }
 
 function ContactButtons({ contact, personalWebsiteUrl }: ContactButtonsProps) {
+  const { updateField } = useResume();
+
   // Check if there are any contact methods to display
-  const hasContactMethods =
-    personalWebsiteUrl ||
-    contact.email ||
-    contact.tel ||
-    (contact.social && contact.social.length > 0);
+  const hasContactMethods = contact.social && contact.social.length > 0;
 
   if (!hasContactMethods) {
     return null;
   }
 
+  // Handler for updating social links
+  const handleSocialUpdate = (index: number, field: string, value: string) => {
+    updateField(["contact", "social", index.toString(), field], value);
+  };
+
   return (
     <div
-      className="flex gap-x-1 pt-1 font-mono text-sm text-foreground/80 print:hidden"
+      className="flex flex-col gap-y-2 pt-1 font-mono text-sm text-foreground/80 print:hidden"
       role="list"
-      aria-label="Contact links"
+      aria-label="Social links"
     >
-      {personalWebsiteUrl && (
-        <SocialButton
-          href={personalWebsiteUrl}
-          icon={GlobeIcon}
-          label="Personal website"
-        />
-      )}
-      {contact.email && (
-        <SocialButton
-          href={`mailto:${contact.email}`}
-          icon={MailIcon}
-          label="Email"
-        />
-      )}
-      {contact.tel && (
-        <SocialButton
-          href={`tel:${contact.tel}`}
-          icon={PhoneIcon}
-          label="Phone"
-        />
-      )}
+      <h3 className="text-xs font-medium">Social Links</h3>
       {contact.social &&
-        contact.social.map((social) => {
+        contact.social.map((social, index) => {
           // Map social network names to icon components
           let IconComponent: React.ElementType | null = null;
           if (social.name === "GitHub") IconComponent = GitHubIcon;
           else if (social.name === "LinkedIn") IconComponent = LinkedInIcon;
           else if (social.name === "X") IconComponent = XIcon;
+          else IconComponent = GlobeIcon; // Default icon
 
-          // Only render if we have a matching icon
-          return IconComponent ? (
+          // Only render if we have a name and url
+          return social.name && social.url ? (
             <SocialButton
-              key={social.name}
-              href={social.url}
+              key={`${social.name}-${index}`}
+              url={social.url}
               icon={IconComponent}
-              label={social.name}
+              name={social.name}
+              index={index}
+              onUpdate={handleSocialUpdate}
             />
           ) : null;
         })}
@@ -123,7 +129,12 @@ interface PrintContactProps {
 
 function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
   // Don't render the component at all if no contact information is available
-  if (!personalWebsiteUrl && !contact.email && !contact.tel) {
+  if (
+    !personalWebsiteUrl &&
+    !contact.email &&
+    !contact.tel &&
+    (!contact.social || contact.social.length === 0)
+  ) {
     return null;
   }
 
@@ -140,7 +151,11 @@ function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
           >
             {new URL(personalWebsiteUrl).hostname}
           </a>
-          {(contact.email || contact.tel) && <span aria-hidden="true">/</span>}
+          {(contact.email ||
+            contact.tel ||
+            (contact.social && contact.social.length > 0)) && (
+            <span aria-hidden="true">/</span>
+          )}
         </>
       )}
       {contact.email && (
@@ -151,17 +166,44 @@ function PrintContact({ contact, personalWebsiteUrl }: PrintContactProps) {
           >
             {contact.email}
           </a>
-          {contact.tel && <span aria-hidden="true">/</span>}
+          {(contact.tel || (contact.social && contact.social.length > 0)) && (
+            <span aria-hidden="true">/</span>
+          )}
         </>
       )}
       {contact.tel && (
-        <a
-          className="underline hover:text-foreground/70"
-          href={`tel:${contact.tel}`}
-        >
-          {contact.tel}
-        </a>
+        <>
+          <a
+            className="underline hover:text-foreground/70"
+            href={`tel:${contact.tel}`}
+          >
+            {contact.tel}
+          </a>
+          {contact.social && contact.social.length > 0 && (
+            <span aria-hidden="true">/</span>
+          )}
+        </>
       )}
+      {contact.social &&
+        contact.social.map((social, index) => (
+          <React.Fragment key={`print-${social.name}-${index}`}>
+            {social.name && social.url && (
+              <>
+                <a
+                  className="underline hover:text-foreground/70"
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {social.name}
+                </a>
+                {index < contact.social.length - 1 && (
+                  <span aria-hidden="true">/</span>
+                )}
+              </>
+            )}
+          </React.Fragment>
+        ))}
     </div>
   );
 }
