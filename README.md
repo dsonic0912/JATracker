@@ -2,6 +2,8 @@
 
 A modern, full-featured job application tracker with AI-powered resume refinement capabilities. Create, manage, and optimize your resumes for specific job applications with ease.
 
+![JATracker Resume Refinement Screenshot](https://github.com/dsonic0912/JATracker/blob/main/src/images/screenshots/screenshot_jartracker_resume_refinement.png)
+
 ## Features
 
 ### Resume Management
