@@ -8,8 +8,14 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { EditableContent } from "@/components/ui/editable-content";
 import { useResume } from "@/context/resume-context";
-import React, { useState } from "react";
-import { PlusIcon, XIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import React, { useState, useRef } from "react";
+import {
+  PlusIcon,
+  XIcon,
+  PencilIcon,
+  Trash2Icon,
+  HighlighterIcon,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -181,15 +187,57 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Skill</DialogTitle>
+              <p className="text-sm text-muted-foreground">
+                To highlight text, wrap it with &lt;mark&gt; tags:{" "}
+                <code>&lt;mark&gt;text to highlight&lt;/mark&gt;</code>
+              </p>
             </DialogHeader>
             <div className="py-4">
-              <input
-                type="text"
-                value={newBadge}
-                onChange={(e) => setNewBadge(e.target.value)}
-                className="w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="Enter skill or technology"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={newBadge}
+                  onChange={(e) => setNewBadge(e.target.value)}
+                  className="w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  placeholder="Enter skill or technology"
+                />
+
+                {/* Preview of highlighted text */}
+                {newBadge.includes("<mark>") && (
+                  <div className="mt-3 rounded-md border-2 border-yellow-300 bg-yellow-50 p-3 text-sm shadow-sm">
+                    <div className="font-semibold text-gray-800">
+                      Preview with Highlighting:
+                    </div>
+                    <div className="mt-2 rounded bg-white p-2">
+                      {newBadge
+                        .split(/(<mark>.*?<\/mark>)/g)
+                        .map((part, index) => {
+                          if (
+                            part.startsWith("<mark>") &&
+                            part.endsWith("</mark>")
+                          ) {
+                            const highlightedText = part.replace(
+                              /<mark>(.*?)<\/mark>/,
+                              "$1",
+                            );
+                            return (
+                              <span
+                                key={index}
+                                className="rounded bg-yellow-200 px-0.5 text-black"
+                              >
+                                {highlightedText}
+                              </span>
+                            );
+                          }
+                          return part;
+                        })}
+                    </div>
+                    <p className="mt-2 text-xs text-gray-600">
+                      This is how your skill will appear on your resume.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -245,7 +293,31 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
                 variant="secondary"
                 className="pr-5 align-middle text-xs print:px-1.5 print:py-1 print:text-[10px] print:leading-tight"
               >
-                {badge}
+                {typeof badge === "string" && badge.includes("<mark>")
+                  ? // Parse and render highlighted content
+                    badge
+                      .split(/(<mark>.*?<\/mark>)/g)
+                      .map((part, partIndex) => {
+                        if (
+                          part.startsWith("<mark>") &&
+                          part.endsWith("</mark>")
+                        ) {
+                          const highlightedText = part.replace(
+                            /<mark>(.*?)<\/mark>/,
+                            "$1",
+                          );
+                          return (
+                            <span
+                              key={partIndex}
+                              className="rounded bg-yellow-200 px-0.5 text-black"
+                            >
+                              {highlightedText}
+                            </span>
+                          );
+                        }
+                        return part;
+                      })
+                  : badge}
                 {isEditMode && (
                   <span className="absolute right-1 top-1/2 flex -translate-y-1/2 space-x-1 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button
@@ -295,19 +367,61 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
             <DialogTitle>
               {isEditing ? "Edit Skill" : "Add New Skill"}
             </DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              To highlight text, wrap it with &lt;mark&gt; tags:{" "}
+              <code>&lt;mark&gt;text to highlight&lt;/mark&gt;</code>
+            </p>
           </DialogHeader>
           <div className="py-4">
-            <input
-              type="text"
-              value={isEditing ? editingBadge : newBadge}
-              onChange={(e) =>
-                isEditing
-                  ? setEditingBadge(e.target.value)
-                  : setNewBadge(e.target.value)
-              }
-              className="w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              placeholder="Enter skill or technology"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={isEditing ? editingBadge : newBadge}
+                onChange={(e) =>
+                  isEditing
+                    ? setEditingBadge(e.target.value)
+                    : setNewBadge(e.target.value)
+                }
+                className="w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                placeholder="Enter skill or technology"
+              />
+
+              {/* Preview of highlighted text */}
+              {(isEditing ? editingBadge : newBadge).includes("<mark>") && (
+                <div className="mt-3 rounded-md border-2 border-yellow-300 bg-yellow-50 p-3 text-sm shadow-sm">
+                  <div className="font-semibold text-gray-800">
+                    Preview with Highlighting:
+                  </div>
+                  <div className="mt-2 rounded bg-white p-2">
+                    {(isEditing ? editingBadge : newBadge)
+                      .split(/(<mark>.*?<\/mark>)/g)
+                      .map((part, index) => {
+                        if (
+                          part.startsWith("<mark>") &&
+                          part.endsWith("</mark>")
+                        ) {
+                          const highlightedText = part.replace(
+                            /<mark>(.*?)<\/mark>/,
+                            "$1",
+                          );
+                          return (
+                            <span
+                              key={index}
+                              className="rounded bg-yellow-200 px-0.5 text-black"
+                            >
+                              {highlightedText}
+                            </span>
+                          );
+                        }
+                        return part;
+                      })}
+                  </div>
+                  <p className="mt-2 text-xs text-gray-600">
+                    This is how your skill will appear on your resume.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -460,6 +574,9 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [editingTaskIndex, setEditingTaskIndex] = useState(-1);
   const [newTaskText, setNewTaskText] = useState("");
+  const [selectionStart, setSelectionStart] = useState<number | null>(null);
+  const [selectionEnd, setSelectionEnd] = useState<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Function to add a new task
   const handleAddTask = (newTaskDescription: string) => {
@@ -525,6 +642,49 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
       setEditingTaskIndex(index);
       setNewTaskText(tasks[index].description);
       setIsTaskDialogOpen(true);
+    }
+  };
+
+  // Helper function to apply highlighting to selected text
+  const applyHighlight = (
+    text: string,
+    selectionStart: number,
+    selectionEnd: number,
+  ): string => {
+    if (selectionStart === selectionEnd) return text;
+
+    const before = text.substring(0, selectionStart);
+    const selected = text.substring(selectionStart, selectionEnd);
+    const after = text.substring(selectionEnd);
+
+    // Use a special marker for highlighted text
+    return `${before}<mark>${selected}</mark>${after}`;
+  };
+
+  // Track selection in the textarea
+  const handleSelect = (e: React.SyntheticEvent<HTMLTextAreaElement>) => {
+    const target = e.target as HTMLTextAreaElement;
+    setSelectionStart(target.selectionStart);
+    setSelectionEnd(target.selectionEnd);
+  };
+
+  // Apply highlighting to selected text
+  const handleHighlight = () => {
+    if (
+      selectionStart !== null &&
+      selectionEnd !== null &&
+      selectionStart !== selectionEnd
+    ) {
+      const newContent = applyHighlight(
+        newTaskText,
+        selectionStart,
+        selectionEnd,
+      );
+      setNewTaskText(newContent);
+
+      // Reset selection after highlighting
+      setSelectionStart(null);
+      setSelectionEnd(null);
     }
   };
 
@@ -668,7 +828,32 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
                 <ul className="mt-2 list-inside list-disc">
                   {tasks.map((task) => (
                     <li key={task.id || task.description}>
-                      {task.description}
+                      {typeof task.description === "string" &&
+                      task.description.includes("<mark>")
+                        ? // Parse and render highlighted content
+                          task.description
+                            .split(/(<mark>.*?<\/mark>)/g)
+                            .map((part, index) => {
+                              if (
+                                part.startsWith("<mark>") &&
+                                part.endsWith("</mark>")
+                              ) {
+                                const highlightedText = part.replace(
+                                  /<mark>(.*?)<\/mark>/,
+                                  "$1",
+                                );
+                                return (
+                                  <span
+                                    key={index}
+                                    className="rounded bg-yellow-200 px-0.5"
+                                  >
+                                    {highlightedText}
+                                  </span>
+                                );
+                              }
+                              return part;
+                            })
+                        : task.description}
                     </li>
                   ))}
                 </ul>
@@ -697,7 +882,32 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
                   <ul className="mt-2 list-inside list-disc">
                     {tasks.map((task, index) => (
                       <li key={task.id || index} className="group relative">
-                        {task.description}
+                        {typeof task.description === "string" &&
+                        task.description.includes("<mark>")
+                          ? // Parse and render highlighted content
+                            task.description
+                              .split(/(<mark>.*?<\/mark>)/g)
+                              .map((part, partIndex) => {
+                                if (
+                                  part.startsWith("<mark>") &&
+                                  part.endsWith("</mark>")
+                                ) {
+                                  const highlightedText = part.replace(
+                                    /<mark>(.*?)<\/mark>/,
+                                    "$1",
+                                  );
+                                  return (
+                                    <span
+                                      key={partIndex}
+                                      className="rounded bg-yellow-200 px-0.5"
+                                    >
+                                      {highlightedText}
+                                    </span>
+                                  );
+                                }
+                                return part;
+                              })
+                          : task.description}
                         <span className="absolute right-0 top-1/2 flex -translate-y-1/2 space-x-1 opacity-0 transition-opacity group-hover:opacity-100">
                           <Button
                             variant="ghost"
@@ -742,10 +952,29 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
                   : "Edit Bullet Point"}
               </DialogTitle>
             </DialogHeader>
+            <div className="mb-2 flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleHighlight}
+                className="flex items-center gap-1"
+                title="Highlight selected text"
+                disabled={
+                  selectionStart === null ||
+                  selectionEnd === null ||
+                  selectionStart === selectionEnd
+                }
+              >
+                <HighlighterIcon className="h-4 w-4" />
+                <span>Highlight</span>
+              </Button>
+            </div>
             <div className="py-4">
               <textarea
+                ref={textareaRef}
                 value={newTaskText}
                 onChange={(e) => setNewTaskText(e.target.value)}
+                onSelect={handleSelect}
                 className="min-h-[100px] w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 placeholder="Enter bullet point text"
               />
