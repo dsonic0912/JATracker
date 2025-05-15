@@ -4,6 +4,8 @@ A modern, full-featured job application tracker with AI-powered resume refinemen
 
 ![JATracker Resume Refinement Screenshot](https://github.com/dsonic0912/JATracker/blob/main/src/images/screenshots/screenshot_jartracker_resume_refinement.png)
 
+DEMO SITE: https://dsonic-jatracker.davidtung.ca
+
 ## Features
 
 ### Resume Management
@@ -32,7 +34,7 @@ A modern, full-featured job application tracker with AI-powered resume refinemen
 - **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes
 - **Database**: SQLite with Prisma ORM
-- **AI Integration**: OpenAI API (GPT-4o)
+- **AI Integration**: OpenAI API (GPT-3.5-turbo)
 - **UI Components**: Radix UI, Lucide React icons
 - **API**: GraphQL with Apollo Server
 

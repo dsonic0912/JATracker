@@ -263,7 +263,7 @@ export async function POST(request: NextRequest) {
 
     // Call OpenAI API with GPT-3.5 Turbo model for resume refinement
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: process.env.OPENAI_MODEL || "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
