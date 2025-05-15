@@ -55,13 +55,13 @@ export function SkillHighlighter({
     selectionEnd: number,
   ): string => {
     if (selectionStart === selectionEnd) return text;
-    
+
     const before = text.substring(0, selectionStart);
     const selected = text.substring(selectionStart, selectionEnd);
     const after = text.substring(selectionEnd);
-    
+
     console.log("Highlighting parts:", { before, selected, after });
-    
+
     // Use a special marker for highlighted text
     return `${before}<mark>${selected}</mark>${after}`;
   };
@@ -69,7 +69,11 @@ export function SkillHighlighter({
   // Track selection in the input
   const handleSelect = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
-    console.log("Selection changed:", target.selectionStart, target.selectionEnd);
+    console.log(
+      "Selection changed:",
+      target.selectionStart,
+      target.selectionEnd,
+    );
     setSelectionStart(target.selectionStart);
     setSelectionEnd(target.selectionEnd);
   };
@@ -101,7 +105,7 @@ export function SkillHighlighter({
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Skip certain keys that don't affect selection
     if (["Escape", "Tab"].includes(e.key)) return;
-    
+
     if (inputRef.current) {
       setSelectionStart(inputRef.current.selectionStart);
       setSelectionEnd(inputRef.current.selectionEnd);
@@ -111,36 +115,36 @@ export function SkillHighlighter({
   // Apply highlighting to selected text
   const handleHighlight = () => {
     console.log("Highlight button clicked");
-    
+
     // Get the current selection directly from the input element
     if (inputRef.current) {
       const currentStart = inputRef.current.selectionStart;
       const currentEnd = inputRef.current.selectionEnd;
-      
+
       console.log("Current selection from input:", currentStart, currentEnd);
-      
+
       // Use the current selection from the input if available, otherwise fall back to state
       const start = currentStart !== null ? currentStart : selectionStart;
       const end = currentEnd !== null ? currentEnd : selectionEnd;
-      
+
       console.log("Using selection:", start, end);
-      
+
       if (start !== null && end !== null && start !== end) {
         console.log("Text to highlight:", text);
-        
+
         try {
           const newContent = applyHighlight(text, start, end);
           console.log("New content with highlighting:", newContent);
           setText(newContent);
-          
+
           // Reset selection after highlighting
           setSelectionStart(null);
           setSelectionEnd(null);
-          
+
           // Force focus back to the input after highlighting
           if (inputRef.current) {
             inputRef.current.focus();
-            
+
             // Set cursor position after the highlighted text
             setTimeout(() => {
               if (inputRef.current) {
@@ -172,10 +176,11 @@ export function SkillHighlighter({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <p className="text-sm text-muted-foreground">
-            Select text and click the highlight button to highlight important parts of this skill.
+            Select text and click the highlight button to highlight important
+            parts of this skill.
           </p>
         </DialogHeader>
-        
+
         <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
           <div className="text-sm font-medium text-gray-700">
             Text Formatting:
@@ -196,7 +201,7 @@ export function SkillHighlighter({
             <span className="font-medium">Highlight Selection</span>
           </Button>
         </div>
-        
+
         <div className="py-4">
           <div className="relative">
             <input
@@ -211,7 +216,7 @@ export function SkillHighlighter({
               className="w-full rounded-md border border-input bg-[hsl(var(--background))] px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               placeholder="Enter skill"
             />
-            
+
             {/* Preview of highlighted text */}
             {text.includes("<mark>") && (
               <div className="mt-3 rounded-md border-2 border-yellow-300 bg-yellow-50 p-3 text-sm shadow-sm">
@@ -229,7 +234,7 @@ export function SkillHighlighter({
                       return (
                         <span
                           key={index}
-                          className="rounded bg-yellow-200 px-0.5 text-black"
+                          className="rounded bg-yellow-200 px-0.5 text-black print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                         >
                           {highlightedText}
                         </span>
@@ -245,14 +250,12 @@ export function SkillHighlighter({
             )}
           </div>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
-            Save
-          </Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -48,7 +48,10 @@ const parseContentWithHighlights = (content: string): React.ReactNode => {
     if (part.startsWith("<mark>") && part.endsWith("</mark>")) {
       const highlightedText = part.replace(/<mark>(.*?)<\/mark>/, "$1");
       return (
-        <span key={index} className="rounded bg-yellow-200 px-0.5">
+        <span
+          key={index}
+          className="rounded bg-yellow-200 px-0.5 print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
+        >
           {highlightedText}
         </span>
       );

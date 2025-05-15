@@ -223,7 +223,7 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
                             return (
                               <span
                                 key={index}
-                                className="rounded bg-yellow-200 px-0.5 text-black"
+                                className="rounded bg-yellow-200 px-0.5 text-black print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                               >
                                 {highlightedText}
                               </span>
@@ -309,7 +309,7 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
                           return (
                             <span
                               key={partIndex}
-                              className="rounded bg-yellow-200 px-0.5 text-black"
+                              className="rounded bg-yellow-200 px-0.5 text-black print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                             >
                               {highlightedText}
                             </span>
@@ -407,7 +407,7 @@ function BadgeList({ className, badges, workIndex }: BadgeListProps) {
                           return (
                             <span
                               key={index}
-                              className="rounded bg-yellow-200 px-0.5 text-black"
+                              className="rounded bg-yellow-200 px-0.5 text-black print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                             >
                               {highlightedText}
                             </span>
@@ -845,7 +845,7 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
                                 return (
                                   <span
                                     key={index}
-                                    className="rounded bg-yellow-200 px-0.5"
+                                    className="rounded bg-yellow-200 px-0.5 print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                                   >
                                     {highlightedText}
                                   </span>
@@ -899,7 +899,7 @@ function WorkExperienceItem({ work }: WorkExperienceItemProps) {
                                   return (
                                     <span
                                       key={partIndex}
-                                      className="rounded bg-yellow-200 px-0.5"
+                                      className="rounded bg-yellow-200 px-0.5 print:border print:border-yellow-400 print:bg-yellow-200 print:text-black"
                                     >
                                       {highlightedText}
                                     </span>
