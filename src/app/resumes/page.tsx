@@ -18,6 +18,7 @@ import {
   PencilIcon,
   CheckIcon,
   XIcon,
+  CopyIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -43,6 +44,7 @@ export default function ResumesPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -241,6 +243,33 @@ export default function ResumesPage() {
     }
   };
 
+  const handleDuplicateResume = async (resumeId: string) => {
+    try {
+      setDuplicatingId(resumeId);
+      const response = await fetch(`/api/resume/${resumeId}/duplicate`, {
+        method: "POST",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || "Failed to duplicate resume");
+      }
+
+      // Fetch fresh data to show the new duplicate
+      await fetchResumes();
+    } catch (err) {
+      console.error("Error duplicating resume:", err);
+      setError((err as Error).message);
+    } finally {
+      setDuplicatingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <DashboardLayout title="Resumes">
@@ -398,6 +427,17 @@ export default function ResumesPage() {
                   >
                     <Trash2Icon className="mr-2 h-4 w-4" />
                     Delete
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDuplicateResume(resume.id)}
+                    disabled={duplicatingId === resume.id}
+                  >
+                    <CopyIcon className="mr-2 h-4 w-4" />
+                    {duplicatingId === resume.id
+                      ? "Duplicating..."
+                      : "Duplicate"}
                   </Button>
                   <Button variant="outline" size="sm" asChild>
                     <Link href={`/resume?id=${resume.id}`}>

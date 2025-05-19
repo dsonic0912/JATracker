@@ -124,6 +124,9 @@ export async function POST(request: NextRequest) {
           if (work.link) {
             text += `Company Link: ${work.link}\n`;
           }
+          if (work.location) {
+            text += `Location: ${work.location}\n`;
+          }
           text += `${work.start} - ${work.end || "Present"}\n`;
           if (work.description) {
             text += `${work.description}\n`;
@@ -223,10 +226,11 @@ export async function POST(request: NextRequest) {
       - skills: array of skill objects with name property (MUST include ALL original skills, may add new ones)
       - work: array of work experience objects (MUST include ALL original work entries with EXACTLY the same company, title, start, end)
         - Each work object MUST include a description property with the overall role description
+        - Each work object MUST include a location property if provided in the original resume
         - Each work object MUST include a badges array with all skill badges for that role where each badge is an object with a name property
         - Each work object MUST include a tasks array where each task is an object with a description property
         - Each work object MUST include a link property if provided in the original resume (preserve the exact URL)
-        - Example work format: { "company": "Company Name", "link": "https://company-website.com", "title": "Job Title", "description": "Overall role description", "badges": [{ "name": "Skill 1" }, { "name": "Skill 2" }], "tasks": [{ "description": "Task 1" }] }
+        - Example work format: { "company": "Company Name", "link": "https://company-website.com", "title": "Job Title", "location": "New York, NY", "description": "Overall role description", "badges": [{ "name": "Skill 1" }, { "name": "Skill 2" }], "tasks": [{ "description": "Task 1" }] }
         - Badges MUST be objects with a name property, like { "name": "JavaScript" }
         - DO NOT use string badges, always use objects with name property
       - education: array of education objects (MUST include ALL original education entries with EXACTLY the same school, degree, start, end)
@@ -241,6 +245,7 @@ export async function POST(request: NextRequest) {
       - Verify that you have ENHANCED or MODIFIED descriptions, but have NOT DELETED any items
       - Verify that EVERY original work experience is included (you may improve descriptions)
       - Verify that EVERY original work experience has the EXACT SAME start date as in the original resume
+      - Verify that EVERY original work experience has the EXACT SAME location as in the original resume
       - Verify that EVERY original task is included (you may improve wording)
       - Verify that EVERY original badge is included (you may improve wording)
       - Verify that EVERY original education entry is included with the same school, degree, and dates
@@ -268,7 +273,7 @@ export async function POST(request: NextRequest) {
         {
           role: "system",
           content:
-            'You are an expert resume writer that helps refine resumes to match job descriptions. YOU CAN ENHANCE OR MODIFY DESCRIPTIONS, BUT NEVER DELETE ANY ITEMS. YOUR PRIMARY RESPONSIBILITY IS TO PRESERVE ALL ORIGINAL DATA ITEMS. You must include EVERY SINGLE work experience, education entry, project, skill, task, and badge from the original resume - you can improve their wording but never delete them completely. You may modify descriptions to better match the job requirements, but ensure all original items remain in the resume. CRITICAL: You MUST preserve ALL dates exactly as they appear in the original resume, especially the start dates for work experiences. Never change or omit any dates from the original resume. Your job is to ADD new information and ENHANCE existing content to make the resume more relevant to the job description. IMPORTANT FOCUS: Identify and add skills or tasks that would be beneficial for the job role but are not currently on the resume. Look for key skills mentioned in the job description that are missing from the resume and add them as badges or tasks to relevant work experiences. Include industry-standard skills that are commonly expected for this role even if not explicitly mentioned in the job description. BE CREATIVE: Create new task descriptions that align with the job requirements, even if they weren\'t mentioned in the original resume. Invent plausible skills and accomplishments that would make the candidate more competitive for this specific role. Don\'t hesitate to make up relevant experiences that fit with the candidate\'s work history. IMPORTANT FORMAT: Each work experience MUST include a description property with the overall role description AND a badges array where each badge is an object with a name property, like [{ "name": "JavaScript" }, { "name": "React" }]. DO NOT use string badges like ["JavaScript", "React"]. Each work experience MUST include a link property if provided in the original resume (preserve the exact URL). Each work experience MUST include the exact same start and end dates as in the original resume. Each project MUST include a description property with the project description and a link property if provided in the original resume (preserve the exact URL and label). Each education entry MUST include school, degree, start, and end properties with the exact same dates as in the original resume. All tasks must be formatted as objects with a description property, like { "description": "Task description here" }. Never use string tasks. Always respond with valid JSON only, without any markdown formatting or explanatory text. Do not wrap your response in code blocks.',
+            'You are an expert resume writer that helps refine resumes to match job descriptions. YOU CAN ENHANCE OR MODIFY DESCRIPTIONS, BUT NEVER DELETE ANY ITEMS. YOUR PRIMARY RESPONSIBILITY IS TO PRESERVE ALL ORIGINAL DATA ITEMS. You must include EVERY SINGLE work experience, education entry, project, skill, task, and badge from the original resume - you can improve their wording but never delete them completely. You may modify descriptions to better match the job requirements, but ensure all original items remain in the resume. CRITICAL: You MUST preserve ALL dates exactly as they appear in the original resume, especially the start dates for work experiences. You MUST preserve the location field for each work experience exactly as it appears in the original resume. Never change or omit any dates or locations from the original resume. Your job is to ADD new information and ENHANCE existing content to make the resume more relevant to the job description. IMPORTANT FOCUS: Identify and add skills or tasks that would be beneficial for the job role but are not currently on the resume. Look for key skills mentioned in the job description that are missing from the resume and add them as badges or tasks to relevant work experiences. Include industry-standard skills that are commonly expected for this role even if not explicitly mentioned in the job description. BE CREATIVE: Create new task descriptions that align with the job requirements, even if they weren\'t mentioned in the original resume. Invent plausible skills and accomplishments that would make the candidate more competitive for this specific role. Don\'t hesitate to make up relevant experiences that fit with the candidate\'s work history. IMPORTANT FORMAT: Each work experience MUST include a description property with the overall role description AND a badges array where each badge is an object with a name property, like [{ "name": "JavaScript" }, { "name": "React" }]. DO NOT use string badges like ["JavaScript", "React"]. Each work experience MUST include a location property if provided in the original resume (preserve the exact location). Each work experience MUST include a link property if provided in the original resume (preserve the exact URL). Each work experience MUST include the exact same start and end dates as in the original resume. Each project MUST include a description property with the project description and a link property if provided in the original resume (preserve the exact URL and label). Each education entry MUST include school, degree, start, and end properties with the exact same dates as in the original resume. All tasks must be formatted as objects with a description property, like { "description": "Task description here" }. Never use string tasks. Always respond with valid JSON only, without any markdown formatting or explanatory text. Do not wrap your response in code blocks.',
         },
         {
           role: "user",
@@ -331,6 +336,7 @@ export async function POST(request: NextRequest) {
               work.end || "Present"
             }`,
           );
+          console.log(`  Location: ${work.location || "MISSING"}`);
         });
       }
 
@@ -347,6 +353,9 @@ export async function POST(request: NextRequest) {
               work.end || "Present"
             }`,
           );
+
+          // Log work location
+          console.log(`  Location: ${work.location || "MISSING"}`);
 
           // Log work description
           console.log(`  Description: ${work.description || "MISSING"}`);
@@ -456,16 +465,15 @@ export async function POST(request: NextRequest) {
         );
 
         refinedResume.work = refinedResume.work.map((work: any) => {
+          // Try to find the corresponding work experience in the original resume
+          const originalWork = resume.work.find(
+            (ow: any) => ow.company === work.company && ow.title === work.title,
+          );
+
           // Check for missing start date
           if (!work.start) {
             console.warn(
               `Missing start date for work experience: ${work.title} at ${work.company}`,
-            );
-
-            // Try to find the corresponding work experience in the original resume
-            const originalWork = resume.work.find(
-              (ow: any) =>
-                ow.company === work.company && ow.title === work.title,
             );
 
             if (originalWork && originalWork.start) {
@@ -479,6 +487,14 @@ export async function POST(request: NextRequest) {
               );
               work.start = "2023"; // Default to current year as fallback
             }
+          }
+
+          // Check for missing location
+          if (!work.location && originalWork && originalWork.location) {
+            console.log(
+              `Using original location: ${originalWork.location} for ${work.title} at ${work.company}`,
+            );
+            work.location = originalWork.location;
           }
 
           // Ensure badges array exists

@@ -906,6 +906,7 @@ export const resumeService = {
             company: work.company,
             link: work.link,
             title: work.title,
+            location: work.location, // Add location field
             start: work.start,
             end: work.end,
             description: work.description,
